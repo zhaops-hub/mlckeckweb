@@ -74,8 +74,7 @@ export async function getUsers(where) {
 export async function existAccount(data) {
   const url = await helper.getUmsUrl()
   return request({
-    url: url + '/api/User/ExistAccount',
-    method: 'get',
-    params: data
+    url: url + '/users/existUserName/' + data,
+    method: 'get'
   })
 }

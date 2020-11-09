@@ -2,7 +2,7 @@
   <div class="app-container">
     <div class="filter-container">
       <el-input
-        v-model="conditionJson.account"
+        v-model="conditionJson.userName"
         placeholder="账号"
         style="width: 200px"
         class="filter-item"
@@ -127,7 +127,7 @@ export default {
       listLoading: true,
       list: [],
       conditionJson: {
-        account: '',
+        userName: '',
         page: 1,
         rows: 10,
       },

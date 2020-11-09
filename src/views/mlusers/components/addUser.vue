@@ -13,6 +13,7 @@
       :model="userForm"
       status-icon
       label-width="100px"
+      :rules="addRules"
       class="demo-ruleForm"
     >
       <el-form-item label="用户名" prop="userName">
@@ -41,6 +42,23 @@ const helper = Common.helper
 export default {
   props: ['id', 'dialogVisible'],
   data() {
+    const validateAccount = async (rule, value, callback) => {
+      if (!value) {
+        callback(new Error('请输入账号！'))
+      }
+
+      const { data, code } = await this.$store.dispatch(
+        'user/existAccount',
+        value
+      )
+
+      if (code == 0 && data) {
+        callback(new Error('账号[' + value + ']已经存在！'))
+      }
+
+      callback()
+    }
+
     return {
       loading: false,
       userForm: {
@@ -52,10 +70,19 @@ export default {
         isDelete: '',
         expired: '',
       },
+      addRules: {
+        userName: [
+          { required: true, validator: validateAccount, trigger: 'change' },
+        ],
+      },
     }
   },
   methods: {
-    submit() {},
+    submit() {
+      this.$refs['userForm'].validate(async (valid) => {
+        alert(valid)
+      })
+    },
     close() {
       this.$refs['userForm'].resetFields()
       this.$emit('close-addUser')
