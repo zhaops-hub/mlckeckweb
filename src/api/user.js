@@ -19,29 +19,19 @@ export async function getInfo() {
   })
 }
 
+export async function getUser(id) {
+  const url = await helper.getUmsUrl()
+  return request({
+    url: url + '/users/getUser/' + id,
+    method: 'get'
+  })
+}
+
 export async function addUser(data) {
   const url = await helper.getUmsUrl()
   return request({
-    url: url + '/api/User/AddUser',
+    url: url + '/users/add',
     method: 'Post',
-    data
-  })
-}
-
-export async function deleteUser(data) {
-  const url = await helper.getUmsUrl()
-  return request({
-    url: url + '/api/User/DeleteUser',
-    method: 'get',
-    params: data
-  })
-}
-
-export async function deleteUsers(data) {
-  const url = await helper.getUmsUrl()
-  return request({
-    url: url + '/api/User/DeleteUsers',
-    method: 'post',
     data
   })
 }
@@ -75,6 +65,23 @@ export async function existAccount(data) {
   const url = await helper.getUmsUrl()
   return request({
     url: url + '/users/existUserName/' + data,
+    method: 'get'
+  })
+}
+
+
+export async function deleteUser(data) {
+  const url = await helper.getUmsUrl()
+  return request({
+    url: url + '/users/' + data,
+    method: 'DELETE'
+  })
+}
+
+export async function resume(data) {
+  const url = await helper.getUmsUrl()
+  return request({
+    url: url + '/users/resume/' + data,
     method: 'get'
   })
 }

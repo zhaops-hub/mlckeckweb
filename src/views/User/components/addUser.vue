@@ -25,11 +25,19 @@
           name="account"
         />
       </el-form-item>
-      <el-form-item v-if="id==''" label="密码" prop="password">
-        <el-input v-model="userForm.password" type="password" autocomplete="off" />
+      <el-form-item label="密码" prop="password">
+        <el-input
+          v-model="userForm.password"
+          type="password"
+          autocomplete="off"
+        />
       </el-form-item>
-      <el-form-item v-if="id==''" label="确认密码" prop="checkPassword">
-        <el-input v-model="userForm.checkPassword" type="password" autocomplete="off" />
+      <el-form-item label="确认密码" prop="checkPassword">
+        <el-input
+          v-model="userForm.checkPassword"
+          type="password"
+          autocomplete="off"
+        />
       </el-form-item>
       <el-form-item label="姓名" prop="realName">
         <el-input v-model="userForm.realName" type="text" />
@@ -50,12 +58,22 @@
           multiple
           placeholder="请选择"
         >
-          <el-option v-for="item in roles" :key="item.id" :label="item.roleName" :value="item.id"></el-option>
+          <el-option
+            v-for="item in roles"
+            :key="item.id"
+            :label="item.roleName"
+            :value="item.id"
+          ></el-option>
         </el-select>
       </el-form-item>
 
       <el-form-item label="组织机构" prop="organizationId">
-        <el-select v-model="userForm.organizationId" v-loading="orgLoading" filterable  placeholder="请选择">
+        <el-select
+          v-model="userForm.organizationId"
+          v-loading="orgLoading"
+          filterable
+          placeholder="请选择"
+        >
           <el-option
             v-for="item in orgs"
             :key="item.id"
@@ -79,8 +97,12 @@
         </el-upload>
       </el-form-item>
       <el-form-item label="性别" prop="gender">
-        <el-radio v-model="userForm.gender" name="gender" label="1">男</el-radio>
-        <el-radio v-model="userForm.gender" name="gender" label="0">女</el-radio>
+        <el-radio v-model="userForm.gender" name="gender" label="1"
+          >男</el-radio
+        >
+        <el-radio v-model="userForm.gender" name="gender" label="0"
+          >女</el-radio
+        >
       </el-form-item>
     </el-form>
 
@@ -106,7 +128,7 @@ export default {
 
       const isExit = await this.$store.dispatch('user/existAccount', {
         account: value,
-        userId: this.userForm.id
+        userId: this.userForm.id,
       })
 
       if (isExit) {
@@ -171,7 +193,7 @@ export default {
         mobile: '',
         email: '',
         description: '',
-        roles: []
+        roles: [],
       },
       orgs: [],
       roles: [],
@@ -182,35 +204,34 @@ export default {
       uploadUrl: '',
       headers: {
         'api-version': '1.0',
-        Authorization: 'Bearer ' + getToken()
+        Authorization: 'Bearer ' + getToken(),
       },
       addRules: {
         account: [
-          { required: true, validator: validateAccount, trigger: 'change' }
+          { required: true, validator: validateAccount, trigger: 'change' },
         ],
         password: [
-          { required: true, validator: validatePass, trigger: 'change' }
+          { required: true, validator: validatePass, trigger: 'change' },
         ],
         checkPassword: [
-          { required: true, validator: validateCheckpass, trigger: 'change' }
+          { required: true, validator: validateCheckpass, trigger: 'change' },
         ],
         realName: [
-          { required: true, message: '请输入姓名！', trigger: 'change' }
+          { required: true, message: '请输入姓名！', trigger: 'change' },
         ],
         mobile: [
-          { required: false, validator: validateMobile, trigger: 'change' }
+          { required: false, validator: validateMobile, trigger: 'change' },
         ],
         email: [
-          { required: false, validator: validateEmail, trigger: 'change' }
+          { required: false, validator: validateEmail, trigger: 'change' },
         ],
         organizationId: [
-          { required: true, message: '请输入组织机构！', trigger: 'change' }
-        ]
-        ,
+          { required: true, message: '请输入组织机构！', trigger: 'change' },
+        ],
         checkedRoles: [
-          { required: true, validator: validateRole, trigger: 'change' }
-        ]
-      }
+          { required: true, validator: validateRole, trigger: 'change' },
+        ],
+      },
     }
   },
   created() {},
@@ -223,7 +244,7 @@ export default {
     async getUserById() {
       this.loading = true
       const res = await this.$store.dispatch('user/getUserById', {
-        userId: this.userForm.id
+        userId: this.userForm.id,
       })
       if (res.code == 0) {
         this.checkedRoles = []
@@ -236,7 +257,9 @@ export default {
         let tempRole = []
         for (const i in res.data.roles) {
           //过滤掉下拉菜单里面 没有的权限
-          if (this.roles.filter(d => d.id == res.data.roles[i].id).length == 0)
+          if (
+            this.roles.filter((d) => d.id == res.data.roles[i].id).length == 0
+          )
             continue
           tempRole.push(res.data.roles[i].id)
         }
@@ -244,8 +267,8 @@ export default {
         this.checkedRoles = tempRole
         //组织机构判断是否存在
         if (
-          this.orgs.filter(d => d.id == this.userForm.organizationId).length ==
-          0
+          this.orgs.filter((d) => d.id == this.userForm.organizationId)
+            .length == 0
         ) {
           this.userForm.organizationId = ''
         }
@@ -303,14 +326,14 @@ export default {
     },
     submit() {
       // console.log(this.userForm.roles);
-      this.$refs['userForm'].validate(async valid => {
+      this.$refs['userForm'].validate(async (valid) => {
         if (valid) {
           // 转换权限
           const tempRoles = []
           console.log(this.userForm.roles)
           for (const key in this.roles) {
             if (
-              this.checkedRoles.filter(d => {
+              this.checkedRoles.filter((d) => {
                 return d.indexOf(this.roles[key].id) > -1
               }).length > 0
             ) {
@@ -335,8 +358,8 @@ export default {
     close() {
       this.$refs['userForm'].resetFields()
       this.$emit('close-addUser')
-    }
-  }
+    },
+  },
 }
 </script>
 <style>

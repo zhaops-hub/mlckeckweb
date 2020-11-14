@@ -61,7 +61,12 @@
         prop="lastLoginTime"
         width="*"
         align="center"
-      />
+      >
+        <template slot-scope="{ row }">
+          <span v-if="row.lastLoginTime">{{ row.lastLoginTime }}</span>
+          <span v-if="!row.lastLoginTime">无</span>
+        </template>
+      </el-table-column>
 
       <el-table-column
         label="操作"
@@ -74,8 +79,20 @@
             <el-button type="primary" size="mini" @click="handleUpdate(row)"
               >修改</el-button
             >
-            <el-button type="primary" size="mini" @click="deleteUser(row)"
+            <el-button
+              type="primary"
+              v-if="row.isDelete == 0"
+              size="mini"
+              @click="deleteUser(row)"
               >禁用</el-button
+            >
+
+            <el-button
+              type="primary"
+              v-if="row.isDelete == 1"
+              size="mini"
+              @click="deleteUser(row)"
+              >启用</el-button
             >
           </div>
           <span v-if="row.isAdmin == 1">不可操作</span>
@@ -104,6 +121,7 @@
 <script>
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { Message } from 'element-ui'
+import { deleteUser, resume } from '../../api/user'
 import { parseGender, parseTime } from '@/utils'
 import AddUser from './components/addUser'
 
@@ -138,14 +156,17 @@ export default {
     this.getList()
   },
   methods: {
-    handleUpdate(row) {},
+    handleUpdate(row) {
+      this.id = row.id
+      this.dialogVisible = true
+    },
     closeAddUser() {
       this.dialogVisible = false
       this.getList()
     },
     async getList() {
       this.listLoading = true
-      const { code, data, total } = await this.$store.dispatch(
+      const { code, data, pages } = await this.$store.dispatch(
         'user/getUsers',
         this.conditionJson
       )
@@ -158,12 +179,46 @@ export default {
         })
       } else {
         this.list = data
-        this.total = total
+        this.total = pages
       }
     },
     addUser() {
       this.dialogVisible = true
       this.id = ''
+    },
+    async deleteUser(row) {
+      var confirmMsg = '禁用'
+      if (row.isDelete == 1) confirmMsg = '启用'
+      try {
+        const conf = await this.$confirm(
+          '确定要' + confirmMsg + ', 是否继续?',
+          '提示',
+          {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning',
+          }
+        )
+
+        if (confirm == undefined) return
+        if (row.isDelete == 0) {
+          const { code, msg } = await deleteUser(row.id)
+          if (code == 0) {
+            this.getList()
+          } else {
+            this.$message.error(msg)
+          }
+        } else {
+          const { code, msg } = await resume(row.id)
+          if (code == 0) {
+            this.getList()
+          } else {
+            this.$message.error(msg)
+          }
+        }
+      } catch {
+        // 取消
+      }
     },
   },
 }
