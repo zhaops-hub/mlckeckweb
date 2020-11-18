@@ -66,7 +66,6 @@
           placeholder="选择日期"
           format="yyyy-MM-dd"
           value-format="yyyy-MM-dd HH:mm:ss"
-          :picker-options="pickerOptions"
         >
         </el-date-picker>
       </el-form-item>
@@ -171,37 +170,7 @@ export default {
         companyName: [
           { required: true, message: '请输入公司名称!', trigger: 'change' },
         ],
-      },
-      //  日期选择器快捷键
-      pickerOptions: {
-        disabledDate(time) {
-          return time.getTime() > Date.now()
-        },
-        shortcuts: [
-          {
-            text: '今天',
-            onClick(picker) {
-              picker.$emit('pick', new Date())
-            },
-          },
-          {
-            text: '明天',
-            onClick(picker) {
-              const date = new Date()
-              date.setTime(date.getTime() + 3600 * 1000 * 24)
-              picker.$emit('pick', date)
-            },
-          },
-          {
-            text: '一周后',
-            onClick(picker) {
-              const date = new Date()
-              date.setTime(date.getTime() + 3600 * 1000 * 24 * 7)
-              picker.$emit('pick', date)
-            },
-          },
-        ],
-      },
+      }
     }
   },
   created() {
